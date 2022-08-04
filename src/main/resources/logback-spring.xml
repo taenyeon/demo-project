@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <conversionRule conversionWord="clr" converterClass="org.springframework.boot.logging.logback.ColorConverter"/>
+    <conversionRule conversionWord="wex"
+                    converterClass="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter"/>
+    <conversionRule conversionWord="wEx"
+                    converterClass="org.springframework.boot.logging.logback.ExtendedWhitespaceThrowableProxyConverter"/>
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>✈️ %clr(%d{${LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS}}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(${PID:- }){magenta} [traceId=%X{traceId}] %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}
+            </pattern>
+        </encoder>
+    </appender>
+    <!-- log4jdbc 옵션 설정 -->
+    <logger name="jdbc" level="OFF"/>
+    <!-- sql문만 로깅할지 여부 -->
+    <logger name="jdbc.sqlonly" level="OFF"/>
+    <!-- 쿼리문 수행시간 로깅 여부 -->
+    <logger name="jdbc.sqltiming" level="DEBUG"/>
+    <!-- ResultSet외 모든 JDBC 호출 정보 로깅할지 여부 -->
+    <logger name="jdbc.audit" level="OFF"/>
+    <!-- ResultSet 포함 모든 JDBC 호출 정보를 로깅 -->
+    <logger name="jdbc.resultset" level="OFF"/>
+    <logger name="jdbc.resultsettable" level="OFF"/>
+    <!-- connection open close 로깅 여부 -->
+    <logger name="jdbc.connection" level="OFF"/>
+    <springProfile name="local">
+        <root level="info">
+            <appender-ref ref="CONSOLE"/>
+        </root>
+    </springProfile>
+</configuration>
