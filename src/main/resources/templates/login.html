@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<form name="loginForm" id="loginForm">
+    <label for="loginId">ID : </label><input type="text" id="loginId" name="id" autofocus="autofocus"/> <br/>
+    <label for="password">PWD : </label><input id="password" name="pwd" type="password"/> <br/>
+    <input type="button" value="Login" name="login" id="login"/>
+</form>
+<h1>TEST</h1>
+<b>Authenticated Name</b>
+<div sec:authentication="principal"></div>
+<script>
+    $(document).ready(function () {
+        $("#login").click(function () {
+            let formData = $("#loginForm");
+            let form = new FormData(formData[0]);
+            $.ajax({
+                url: '/user/login/process',
+                method: 'POST',
+                data: form,
+                processData: false,
+                contentType: false,
+                dataType : 'json',
+                success: function (data){
+                    if (data.status === 200){
+
+                    console.log("login success!")
+                    console.log(data);
+                    location.href = "/v1/test"
+                    }else {
+                        alert("login fail!");
+                        alert('status : '+data.status+', message : '+data.message);
+                    }
+                },
+                error: function (data){
+                        alert("알 수 없는 오류 발생")
+                }
+            })
+        })
+    })
+</script>
+</body>
+</html>
