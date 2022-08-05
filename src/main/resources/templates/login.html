@@ -28,14 +28,13 @@
                 contentType: false,
                 dataType : 'json',
                 success: function (data){
-                    if (data.status === 200){
-
+                    if (data.resultCode === 200){
                     console.log("login success!")
                     console.log(data);
                     location.href = "/v1/test"
                     }else {
                         alert("login fail!");
-                        alert('status : '+data.status+', message : '+data.message);
+                        alert('status : '+data.resultCode+', message : '+data.resultMessage);
                     }
                 },
                 error: function (data){

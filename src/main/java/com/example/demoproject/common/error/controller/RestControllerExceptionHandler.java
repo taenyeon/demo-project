@@ -25,7 +25,7 @@ public class RestControllerExceptionHandler {
         return getErrorResponse(response, e);
     }
 
-    // todo 추후 status 모듈화 &
+    // todo 추후 실제 개발 시, Enum으로 처리 필요.
     private ResponseEntity<ErrorResponse> getErrorResponse(HttpServletResponse response, Exception e) throws IOException {
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .status(400)

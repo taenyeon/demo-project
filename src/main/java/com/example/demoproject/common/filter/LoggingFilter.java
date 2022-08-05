@@ -21,12 +21,15 @@ public class LoggingFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         if (request instanceof HttpServletRequest && response instanceof HttpServletResponse) {
+            // log 조회 시, traceId를 통해 request에 해당하는 로그를 찾기 편함.
             MDC.put("traceId", UUID.randomUUID().toString());
             HttpServletRequest httpRequest = (HttpServletRequest) request;
             HttpServletResponse httpResponse = (HttpServletResponse) response;
             long startTime = System.currentTimeMillis();
+            // 케싱을 통해 request,response의 데이터 보존
             ContentCachingRequestWrapper requestWrapper = new ContentCachingRequestWrapper(httpRequest);
             ContentCachingResponseWrapper responseWrapper = new ContentCachingResponseWrapper(httpResponse);
+            // 필터 체인 전, request logging
             log.info("[REQUEST] URL = {}, method = {}, headers = {}, param = {}, time = {}",
                     requestWrapper.getRequestURI(),
                     requestWrapper.getMethod(),
@@ -34,8 +37,8 @@ public class LoggingFilter implements Filter {
                     getRequestBody(requestWrapper),
                     startTime
             );
-
             chain.doFilter(requestWrapper, responseWrapper);
+            // 필터 체인 후, response logging
             log.info("[RESPONSE] headers = {}, status = {}, body = {}, elapsedTime = {}",
                     getResponseHeaders(responseWrapper),
                     responseWrapper.getStatus(),
@@ -64,19 +67,6 @@ public class LoggingFilter implements Filter {
             params.put(paramName,request.getParameter(paramName));
         }
         return params;
-//        ContentCachingRequestWrapper w = WebUtils.getNativeRequest(request, ContentCachingRequestWrapper.class);
-//        if (w != null) {
-//            byte[] buf = w.getContentAsByteArray();
-//            log.info("bufSize = {}", buf.length);
-//            if (buf.length > 0) {
-//                try {
-//                    return new String(buf, 0, buf.length, w.getCharacterEncoding());
-//                } catch (UnsupportedEncodingException e) {
-//                    return " - ";
-//                }
-//            }
-//        }
-//        return " - ";
     }
 
     private Map<String, Object> getResponseHeaders(HttpServletResponse response) {
@@ -95,6 +85,8 @@ public class LoggingFilter implements Filter {
             byte[] buf = w.getContentAsByteArray();
             if (buf.length > 0) {
                 payload = new String(buf, 0, buf.length, w.getCharacterEncoding());
+                // response는 한번 읽을 경우, 보존이 안되기 때문에
+                // response를 copy하여 저장.
                 w.copyBodyToResponse();
             }
         }

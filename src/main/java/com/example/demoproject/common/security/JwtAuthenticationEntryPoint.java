@@ -16,6 +16,7 @@ import java.util.Map;
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
+        // EntryPoint의 구현체로 작성하였으나, 현재 사용이 안됨.
         log.error("unauthorized error. Message - {}",authException.getMessage());
         Map<String,String> errorCode = (Map<String, String>) request.getAttribute("unauthorization.code");
         String error = errorCode.keySet().stream().findFirst().orElse(null);

@@ -29,6 +29,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     @Bean
     public FilterRegistrationBean getFilterRegistrationBean() {
+        // logging filter 적용
         FilterRegistrationBean registrationBean = new FilterRegistrationBean(new LoggingFilter());
         registrationBean.setOrder(Integer.MIN_VALUE);
         return registrationBean;
@@ -37,6 +38,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     @Bean
     public FilterRegistrationBean disableErrorPageFilter(ErrorPageFilter errorPageFilter) {
+        // errorPage filter 사용 X
         FilterRegistrationBean registrationBean = new FilterRegistrationBean(errorPageFilter);
         registrationBean.setEnabled(false);
         return registrationBean;
@@ -44,6 +46,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
+        // spring security 기본 사용 password Encoder를 빈으로 등록하여
+        // DB에서 가져온 pwd 조회
         return new BCryptPasswordEncoder();
     }
 

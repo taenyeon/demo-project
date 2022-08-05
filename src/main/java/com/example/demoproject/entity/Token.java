@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 public class Token {
     @Data
@@ -13,11 +14,13 @@ public class Token {
         private String id;
         private String pwd;
     }
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @Builder
-    public static final class Response {
+
+    @SuperBuilder
+    public static final class Response extends ResponseDto {
         private String token;
+
+        private Response(ResponseDtoBuilder<?, ?> b) {
+            super(b);
+        }
     }
 }

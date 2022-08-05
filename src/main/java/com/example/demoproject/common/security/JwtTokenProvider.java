@@ -3,7 +3,6 @@ package com.example.demoproject.common.security;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 
@@ -26,7 +25,7 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    public static String getUserIdFromHJWT(String token){
+    public static String getUserIdFromJWT(String token){
         Claims claims = Jwts.parser()
                 .setSigningKey(JWT_SECRET)
                 .parseClaimsJws(token)

@@ -15,14 +15,16 @@
     <select id="findById" resultType="com.example.demoproject.entity.UserEntity">
         SELECT userSeq,
                id,
-               pwd
+               pwd,
+               role
         FROM demo_project.tb_user
         where userSeq = #{userSeq}
     </select>
     <select id="findByIdWhenLogin" resultType="com.example.demoproject.entity.UserEntity">
         SELECT userSeq,
                id,
-               pwd
+               pwd,
+               role
         FROM demo_project.tb_user
         where id = #{id}
     </select>

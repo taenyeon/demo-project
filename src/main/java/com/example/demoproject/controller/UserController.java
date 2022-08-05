@@ -11,10 +11,15 @@ import org.springframework.http.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import java.util.Arrays;
 
 import static com.example.demoproject.common.security.JwtAuthenticationProvider.COOKIE_NAME;
 
@@ -27,39 +32,61 @@ public class UserController {
     private final PasswordEncoder passwordEncoder;
 
     @GetMapping("/login")
-    public String getLoginPage(){
+    public String getLoginPage() {
         return "login";
     }
 
     @PostMapping(value = "/login/process")
     @ResponseBody
-    public ResponseEntity<?> tryLogin(Token.Request token, HttpServletResponse response){
+    public ResponseEntity<?> tryLogin(Token.Request token, HttpServletResponse response) {
         log.info("login process");
         UserEntity user = userService.findByIdWhenLogin(token.getId());
-        if (!passwordEncoder.matches(token.getPwd(),user.getPwd())){
-            log.info("비밀번호 오류 id : {}",token.getId());
+        if (!passwordEncoder.matches(token.getPwd(), user.getPwd())) {
+            log.info("비밀번호 오류 id : {}", token.getId());
             throw new IllegalStateException("비밀번호 오류입니다.");
         }
-        Authentication authentication = new UserAuthentication(token.getId(),null,null);
-        String responseToken = JwtTokenProvider.generateToken(authentication);
+        Authentication authentication = new UserAuthentication(token.getId(), null, null);
+        String generateToken = JwtTokenProvider.generateToken(authentication);
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        ResponseCookie responseCookie = ResponseCookie.from(COOKIE_NAME,responseToken)
+        ResponseCookie responseCookie = ResponseCookie.from(COOKIE_NAME, generateToken)
                 .path("/")
                 .secure(true)
                 .sameSite("None")
                 .httpOnly(true)
                 .build();
-        response.setHeader("Set-Cookie",responseCookie.toString());
+        response.setHeader("Set-Cookie", responseCookie.toString());
+        Token.Response responseToken = Token.Response.builder()
+                .token(generateToken)
+                .resultCode(200)
+                .resultMessage("success")
+                .build();
         return ResponseEntity.ok().body(responseToken);
     }
 
+    @GetMapping("/logout")
+    public String tryLogout(HttpServletRequest request,HttpServletResponse response) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null){
+            new SecurityContextLogoutHandler().logout(request,response,authentication);
+        }
+        else {
+            throw new IllegalStateException("로그인 정보가 없습니다.");
+        }
+        ResponseCookie responseCookie = ResponseCookie.from(COOKIE_NAME, null)
+                .path("/")
+                .maxAge(0)
+                .build();
+        response.setHeader("Set-Cookie", responseCookie.toString());
+        return "login";
+    }
+
     @GetMapping("/regist")
-    public String getRegistPage(){
+    public String getRegistPage() {
         return "regist";
     }
 
     @PostMapping("/regist")
-    public String insertUser(UserEntity userEntity){
+    public String insertUser(UserEntity userEntity) {
         log.info("registUser");
         int i = userService.insertUser(userEntity);
         return "test";
@@ -67,15 +94,15 @@ public class UserController {
 
     @ResponseBody
     @GetMapping("/{userSeq}")
-    public UserEntity findById(@PathVariable Long userSeq){
-       return userService.findById(userSeq);
+    public UserEntity findById(@PathVariable Long userSeq) {
+        return userService.findById(userSeq);
     }
 
     @ResponseBody
     @GetMapping("/{userSeq}/delete")
-    public String deleteUser(@PathVariable Long userSeq){
+    public String deleteUser(@PathVariable Long userSeq) {
         int i = userService.deleteUser(userSeq);
-        if (i>0){
+        if (i > 0) {
             return "success";
         }
         return "fail";
