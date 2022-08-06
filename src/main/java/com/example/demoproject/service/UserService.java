@@ -4,6 +4,7 @@ import com.example.demoproject.common.security.entity.Role;
 import com.example.demoproject.entity.UserEntity;
 import com.example.demoproject.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -46,6 +47,7 @@ public class UserService {
         return userRepository.findById(userSeq)
                 .orElseThrow(() -> new IllegalStateException("등록된 회원을 찾을 수 없습니다."));
     }
+
 
     public int deleteUser(long userSeq) {
         return userRepository.deleteUser(userSeq);

@@ -16,7 +16,8 @@
         SELECT userSeq,
                id,
                pwd,
-               role
+               role,
+               now() as createAt
         FROM demo_project.tb_user
         where userSeq = #{userSeq}
     </select>
@@ -24,7 +25,8 @@
         SELECT userSeq,
                id,
                pwd,
-               role
+               role,
+               now() as createAt
         FROM demo_project.tb_user
         where id = #{id}
     </select>

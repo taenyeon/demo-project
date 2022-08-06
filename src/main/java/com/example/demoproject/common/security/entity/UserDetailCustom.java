@@ -1,5 +1,6 @@
 package com.example.demoproject.common.security.entity;
 
+import com.example.demoproject.entity.UserEntity;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -12,12 +13,18 @@ import java.util.Collection;
 @Getter
 @Setter
 @ToString
-@Builder
 public class UserDetailCustom implements UserDetails {
     private long userSeq;
     private String id;
     private String pwd;
     private String role;
+
+    public UserDetailCustom(UserEntity userEntity) {
+        this.userSeq = userEntity.getUserSeq();
+        this.id = userEntity.getId();
+        this.pwd = userEntity.getPwd();
+        this.role = userEntity.getRole();
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -3,6 +3,7 @@ package com.example.demoproject.common.config;
 import com.example.demoproject.common.security.JwtAuthenticationEntryPoint;
 import com.example.demoproject.common.security.JwtAuthenticationProvider;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
@@ -25,6 +26,8 @@ import java.util.Arrays;
 @EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
 @Slf4j
 public class SecurityConfig {
+    @Autowired
+    JwtAuthenticationProvider jwtAuthenticationProvider;
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
@@ -47,14 +50,18 @@ public class SecurityConfig {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 // UsernamePasswordAuth 필터 앞(모든 security 필더 앞)에 커스텀 필터 적용
-                .addFilterBefore(new JwtAuthenticationProvider(), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtAuthenticationProvider, UsernamePasswordAuthenticationFilter.class)
                 // request 권한 설정
                 .authorizeRequests()
                 // 예외 url
                 .antMatchers(
                         "/user/regist"
                         , "/user/login"
-                        , "/user/login/process")
+                        , "/user/login/process"
+                        , "/static/js/**",
+                        "/static/css/**",
+                        "/static/img/**"
+                )
                 // 인증이 없어도 request 가능
                 .permitAll()
                 // 이외 모든 url
@@ -69,15 +76,15 @@ public class SecurityConfig {
                     response.setStatus(HttpStatus.UNAUTHORIZED.value());
                     response.setContentType("text/html");
                     response.setCharacterEncoding("UTF-8");
-                    response.getWriter().write(getUnAuthMessage(authException));
+                    response.getWriter().write(getUnAuthMessage("로그인 후, 이용해주세요.", "/user/login"));
                 }))
                 // 인가 (권한 여부) 오류 핸들링 -> 없을 경우
                 .accessDeniedHandler(((request, response, accessDeniedException) -> {
-                    log.info("accessDenied error. Message - {}",accessDeniedException.getMessage());
+                    log.info("accessDenied error. Message - {}", accessDeniedException.getMessage());
                     response.setStatus(HttpStatus.UNAUTHORIZED.value());
                     response.setContentType("text/html");
                     response.setCharacterEncoding("UTF-8");
-                    response.getWriter().write(getUnAuthMessage(accessDeniedException));
+                    response.getWriter().write(getUnAuthMessage("권한이 없습니다.", null));
                 }))
                 .and()
                 // security 기본 제공 로그인 form 사용 X
@@ -103,14 +110,15 @@ public class SecurityConfig {
         return source;
     }
 
-    private String getUnAuthMessage(Exception e) {
+    private String getUnAuthMessage(String message, String path) {
         // 에러 메세지
         return new StringBuilder()
                 .append("<script>")
                 .append("alert('")
-                .append(e.getMessage())
+                .append(message)
                 .append("');")
-                .append("history.go(-1);")
+                .append(path != null ? "location.href= '" + path + "'" : "history.go(-1)")
+                .append(";")
                 .append("</script>")
                 .toString();
 

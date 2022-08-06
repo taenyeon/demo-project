@@ -1,9 +1,11 @@
 package com.example.demoproject.common.security;
 
 import com.example.demoproject.common.security.entity.UserAuthentication;
+import com.example.demoproject.common.security.entity.UserDetailCustom;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.thymeleaf.util.StringUtils;
 
@@ -17,20 +19,23 @@ import java.util.Arrays;
 import java.util.Optional;
 
 @Slf4j
+@Component
 public class JwtAuthenticationProvider extends OncePerRequestFilter {
     // jwt 토큰을 통해 인증 조회
     public static final String COOKIE_NAME = "jwt";
-
+    @Autowired
+    private CustomUserDetailService customUserDetailService;
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
             String jwt = getJwtFromRequest(request);
-            String id = " - ";
+            String userSeq = " - ";
             if (!StringUtils.isEmptyOrWhitespace(jwt) && JwtTokenProvider.validateToken(jwt)) {
-                id = JwtTokenProvider.getUserIdFromJWT(jwt);
-                UserAuthentication userAuthentication = new UserAuthentication(id, null, null);
-                userAuthentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
+                userSeq = JwtTokenProvider.getUserSeqFromJWT(jwt);
+                log.info(userSeq);
+                UserDetailCustom user = customUserDetailService.loadUserByUserSeq(Long.parseLong(userSeq));
+                UserAuthentication userAuthentication = new UserAuthentication(user, null, user.getAuthorities());
+                userAuthentication.setDetails(user);
                 SecurityContextHolder.getContext().setAuthentication(userAuthentication);
             } else {
                 if (StringUtils.isEmpty(jwt)) {
@@ -38,7 +43,7 @@ public class JwtAuthenticationProvider extends OncePerRequestFilter {
                 } else {
                     request.setAttribute("unauthorization", "401-001 인증키 만료.");
                 }
-                log.info("unauthorization error - id : {}, url : {}, Message : {}", id, request.getRequestURI(), request.getAttribute("unauthorization"));
+                log.info("unauthorization error - id : {}, url : {}, Message : {}", userSeq, request.getRequestURI(), request.getAttribute("unauthorization"));
             }
         } catch (Exception e) {
             log.error("errorMessage", e);

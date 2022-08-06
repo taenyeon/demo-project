@@ -1,10 +1,10 @@
 package com.example.demoproject.common.security;
 
+import com.example.demoproject.common.security.entity.UserDetailCustom;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.Authentication;
 
 import java.util.Date;
 
@@ -14,18 +14,19 @@ public class JwtTokenProvider {
 
     private static final int JWT_EXPIRATION_MS = 604800000;
 
-    public static String generateToken(Authentication authentication){
+    public static String generateToken(UserDetailCustom userDetailCustom){
+        log.info(userDetailCustom.getId());
         Date now = new Date();
         Date expiredDate = new Date(now.getTime() + JWT_EXPIRATION_MS);
         return Jwts.builder()
-                .setSubject(String.valueOf(authentication.getPrincipal()))
+                .setSubject(String.valueOf(userDetailCustom.getUserSeq()))
                 .setIssuedAt(now)
                 .setExpiration(expiredDate)
                 .signWith(SignatureAlgorithm.HS512,JWT_SECRET)
                 .compact();
     }
 
-    public static String getUserIdFromJWT(String token){
+    public static String getUserSeqFromJWT(String token){
         Claims claims = Jwts.parser()
                 .setSigningKey(JWT_SECRET)
                 .parseClaimsJws(token)

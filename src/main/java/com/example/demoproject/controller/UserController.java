@@ -1,7 +1,7 @@
 package com.example.demoproject.controller;
 
 import com.example.demoproject.common.security.JwtTokenProvider;
-import com.example.demoproject.common.security.entity.UserAuthentication;
+import com.example.demoproject.common.security.entity.UserDetailCustom;
 import com.example.demoproject.entity.Token;
 import com.example.demoproject.entity.UserEntity;
 import com.example.demoproject.service.UserService;
@@ -13,13 +13,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import java.util.Arrays;
 
 import static com.example.demoproject.common.security.JwtAuthenticationProvider.COOKIE_NAME;
 
@@ -45,9 +44,7 @@ public class UserController {
             log.info("비밀번호 오류 id : {}", token.getId());
             throw new IllegalStateException("비밀번호 오류입니다.");
         }
-        Authentication authentication = new UserAuthentication(token.getId(), null, null);
-        String generateToken = JwtTokenProvider.generateToken(authentication);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+        String generateToken = JwtTokenProvider.generateToken(new UserDetailCustom(user));
         ResponseCookie responseCookie = ResponseCookie.from(COOKIE_NAME, generateToken)
                 .path("/")
                 .secure(true)
@@ -56,9 +53,9 @@ public class UserController {
                 .build();
         response.setHeader("Set-Cookie", responseCookie.toString());
         Token.Response responseToken = Token.Response.builder()
-                .token(generateToken)
                 .resultCode(200)
                 .resultMessage("success")
+                .token(generateToken)
                 .build();
         return ResponseEntity.ok().body(responseToken);
     }

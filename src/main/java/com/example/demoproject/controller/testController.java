@@ -28,9 +28,8 @@ public class testController {
     @GetMapping("/test")
     public String test(Model model,
                        @AuthenticationPrincipal UserDetailCustom userDetailCustom) {
-        if (userDetailCustom != null){
-        log.info("is Member---- memberId = {}",userDetailCustom.getId());
-        }
+        log.info(userDetailCustom.getId());
+        log.info(String.valueOf(userDetailCustom.getAuthorities()));
         return "test";
     }
 

@@ -9,14 +9,14 @@
 <body>
 <h1>TEST</h1>
 <b>Authenticated Name</b>
-<div sec:authentication="name"></div>
-<button name="logout" id="logout">logout</button>
+<div sec:authorize="isAuthenticated()"><b>Hello Dood!</b> your Id is <span style="color: cornflowerblue" sec:authentication="name"></span></div>
+<button sec:authorize="isAuthenticated()" name="logout" id="logout">logout</button>
 <script>
     $(document).ready(function () {
-            $("#logout").click(function () {
-                location.href = "/user/logout";
-            })
-    })
+        $("#logout").click(function () {
+            location.href = "/user/logout";
+        });
+    });
 </script>
 </body>
 </html>
