@@ -45,7 +45,7 @@ public class UserService {
         return userRepository.deleteUser(userSeq);
     }
 
-    public String roleFormatStr(Role role){
+    private String roleFormatStr(Role role){
         List<Role> roleList = Arrays.stream(Role.values())
                 .filter(includedRole -> includedRole.getOrder() >= role.getOrder())
                 .collect(Collectors.toList());
