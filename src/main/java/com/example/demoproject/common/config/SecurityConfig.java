@@ -58,9 +58,10 @@ public class SecurityConfig {
                         "/user/regist"
                         , "/user/login"
                         , "/user/login/process"
-                        , "/static/js/**",
-                        "/static/css/**",
-                        "/static/img/**"
+                        , "/js/**",
+                        "/css/**",
+                        "/img/**",
+                        "/favicon.ico"
                 )
                 // 인증이 없어도 request 가능
                 .permitAll()

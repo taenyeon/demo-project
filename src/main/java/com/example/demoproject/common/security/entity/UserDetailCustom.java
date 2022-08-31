@@ -1,7 +1,9 @@
 package com.example.demoproject.common.security.entity;
 
-import com.example.demoproject.entity.UserEntity;
+import com.example.demoproject.domain.UserDto;
 import lombok.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.redis.core.RedisHash;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,17 +15,17 @@ import java.util.Collection;
 @Getter
 @Setter
 @ToString
+@RedisHash("userSeq")
 public class UserDetailCustom implements UserDetails {
+    @Id
     private long userSeq;
     private String id;
-    private String pwd;
     private String role;
 
-    public UserDetailCustom(UserEntity userEntity) {
-        this.userSeq = userEntity.getUserSeq();
-        this.id = userEntity.getId();
-        this.pwd = userEntity.getPwd();
-        this.role = userEntity.getRole();
+    public UserDetailCustom(UserDto userDto) {
+        this.userSeq = userDto.getUserSeq();
+        this.id = userDto.getId();
+        this.role = userDto.getRole();
     }
 
     @Override
@@ -37,7 +39,7 @@ public class UserDetailCustom implements UserDetails {
 
     @Override
     public String getPassword() {
-        return pwd;
+        return null;
     }
 
     @Override

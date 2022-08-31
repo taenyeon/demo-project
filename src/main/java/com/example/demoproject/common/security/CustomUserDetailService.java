@@ -14,11 +14,11 @@ public class CustomUserDetailService implements UserDetailsService {
     private UserService userService;
     @Override
     public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
-        return new UserDetailCustom(userService.findByIdWhenLogin(userId));
+        return new UserDetailCustom(userService.findByUserIdWhenLogin(userId));
     }
 
     public UserDetailCustom loadUserById(String id){
-        return new UserDetailCustom(userService.findByIdWhenLogin(id));
+        return new UserDetailCustom(userService.findByUserIdWhenLogin(id));
     }
 
     public UserDetailCustom loadUserByUserSeq(long userSeq){

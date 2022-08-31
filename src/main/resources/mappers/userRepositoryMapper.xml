@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.demoproject.repository.UserRepository"> <!-- Mapper의 FQCN을 namespace으로 한다. -->
-    <insert id="insertUser" parameterType="UserEntity" useGeneratedKeys="true" keyProperty="userSeq">
+    <insert id="insertUser" parameterType="UserDto" useGeneratedKeys="true" keyProperty="userSeq">
         INSERT INTO demo_project.TB_USER (id, pwd,role)
         VALUES (#{id}, #{pwd},#{role})
     </insert>
@@ -12,7 +12,7 @@
         FROM demo_project.tb_user
         WHERE userSeq = #{userSeq}
     </delete>
-    <select id="findById" resultType="com.example.demoproject.entity.UserEntity">
+    <select id="findById" resultType="com.example.demoproject.domain.UserDto">
         SELECT userSeq,
                id,
                pwd,
@@ -21,7 +21,7 @@
         FROM demo_project.tb_user
         where userSeq = #{userSeq}
     </select>
-    <select id="findByIdWhenLogin" resultType="com.example.demoproject.entity.UserEntity">
+    <select id="findByUserId" resultType="com.example.demoproject.domain.UserDto">
         SELECT userSeq,
                id,
                pwd,

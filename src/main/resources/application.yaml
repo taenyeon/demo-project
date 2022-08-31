@@ -33,4 +33,4 @@ server:
         http-only: true
 mybatis:
   mapper-locations: classpath:mappers/*.xml
-  type-aliases-package: com.example.demoproject.entity
+  type-aliases-package: com.example.demoproject.domain

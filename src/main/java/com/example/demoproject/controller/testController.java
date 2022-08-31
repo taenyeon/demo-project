@@ -1,6 +1,6 @@
 package com.example.demoproject.controller;
 
-import com.example.demoproject.entity.TestEntity;
+import com.example.demoproject.domain.TestDto;
 import com.example.demoproject.common.security.entity.UserDetailCustom;
 import com.example.demoproject.service.TestService;
 import lombok.RequiredArgsConstructor;
@@ -14,9 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Controller
 @RequestMapping("/v1")
@@ -48,11 +46,11 @@ public class testController {
 
     @ResponseBody
     @GetMapping("/test4")
-    public List<TestEntity> test4() {
+    public List<TestDto> test4() {
         int i = 0;
-        List<TestEntity> testEntities = new ArrayList<>();
+        List<TestDto> testEntities = new ArrayList<>();
         while (i < 10) {
-            TestEntity test = TestEntity.builder().
+            TestDto test = TestDto.builder().
                     name(String.valueOf(i)).
                     value(String.valueOf(i)).
                     build();

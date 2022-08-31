@@ -18,6 +18,7 @@ import java.util.Map;
 @RestControllerAdvice
 @Slf4j
 public class RestControllerExceptionHandler {
+
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     protected ResponseEntity<ErrorResponse> handelHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e, HttpServletResponse response) throws IOException {
         log.info("HandleHttpRequestMethodNotSupportedException", e);
@@ -30,25 +31,25 @@ public class RestControllerExceptionHandler {
         return getErrorResponse(e);
     }
 
+
+    @ExceptionHandler(BindException.class)
+    public ResponseEntity<Object> handleBindException(BindException e) {
+        BindingResult bindingResult = e.getBindingResult();
+        Map<String, String> errors = new HashMap<>();
+        errors.put("resultCode", "401");
+        errors.put("resultMessage", e.getMessage());
+        for (FieldError fieldError : bindingResult.getFieldErrors()) {
+            errors.put(fieldError.getField(), fieldError.getDefaultMessage());
+        }
+        return ResponseEntity.status(200).body(errors);
+    }
+
     // todo 추후 실제 개발 시, Enum으로 처리 필요.
     private ResponseEntity<ErrorResponse> getErrorResponse(Exception e) throws IOException {
         ErrorResponse errorResponse = ErrorResponse.builder()
-                .status(400)
-                .message(e.getMessage())
+                .resultCode(400)
+                .resultMessage(e.getMessage())
                 .build();
         return ResponseEntity.status(200).body(errorResponse);
-    }
-
-    @ExceptionHandler(BindException.class)
-    public ResponseEntity<Object> bindExceptionAdvice(BindException e){
-        BindingResult bindingResult = e.getBindingResult();
-        Map<String,String> errors = new HashMap<>();
-        errors.put("resultCode","401");
-        errors.put("resultMessage",e.getMessage());
-        for (FieldError fieldError : bindingResult.getFieldErrors()){
-            log.info("오류 : {}", fieldError.getField());
-            errors.put(fieldError.getField(),fieldError.getDefaultMessage());
-        }
-        return ResponseEntity.status(200).body(errors);
     }
 }

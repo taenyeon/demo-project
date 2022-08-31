@@ -2,8 +2,8 @@ package com.example.demoproject.controller;
 
 import com.example.demoproject.common.security.JwtTokenProvider;
 import com.example.demoproject.common.security.entity.UserDetailCustom;
-import com.example.demoproject.entity.Token;
-import com.example.demoproject.entity.UserEntity;
+import com.example.demoproject.domain.Token;
+import com.example.demoproject.domain.UserDto;
 import com.example.demoproject.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +27,7 @@ import static com.example.demoproject.common.security.JwtAuthenticationProvider.
 @RequiredArgsConstructor
 @Slf4j
 public class UserController {
+
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
 
@@ -39,7 +40,7 @@ public class UserController {
     @ResponseBody
     public ResponseEntity<?> tryLogin(Token.Request token, HttpServletResponse response) {
         log.info("login process");
-        UserEntity user = userService.findByIdWhenLogin(token.getId());
+        UserDto user = userService.findByUserIdWhenLogin(token.getId());
         if (!passwordEncoder.matches(token.getPwd(), user.getPwd())) {
             log.info("비밀번호 오류 id : {}", token.getId());
             throw new IllegalStateException("비밀번호 오류입니다.");
@@ -83,15 +84,15 @@ public class UserController {
     }
 
     @PostMapping("/regist")
-    public String insertUser(UserEntity userEntity) {
+    public String insertUser(@Validated UserDto userDto) {
         log.info("registUser");
-        int i = userService.insertUser(userEntity);
+        userService.insertUser(userDto);
         return "test";
     }
 
     @ResponseBody
     @GetMapping("/{userSeq}")
-    public UserEntity findById(@PathVariable Long userSeq) {
+    public UserDto findById(@PathVariable Long userSeq) {
         return userService.findById(userSeq);
     }
 

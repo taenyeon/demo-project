@@ -1,4 +1,4 @@
-package com.example.demoproject.entity;
+package com.example.demoproject.domain;
 
 import lombok.Data;
 import lombok.experimental.SuperBuilder;

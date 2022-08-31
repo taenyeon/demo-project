@@ -1,25 +1,30 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <script src="/js/validateAjax.js"></script>
 </head>
 <body>
-<form action="/user/regist" method="post">
-    <input type="text" id="id" name="id" autofocus="autofocus" /> <br />
+<form action="/user/regist" method="post" id ="registForm">
+    <input type="text" id="id" name="id" autofocus="autofocus"/> <br />
     <input type="password" id="pwd" name="pwd" /> <br />
     <select name="role">
         <option value="ADMIN">ADMIN</option>
         <option value="USER">USER</option>
     </select><br />
-    <input type="submit" name="regist" value="regist" />
+    <input type="button" id="regist" name="regist" value="regist" />
 </form>
-<!--<script>-->
-<!--    $(document).ready(function (){-->
-<!--        $("#regist").click(function () {-->
-
-<!--        });-->
-<!--    });-->
-<!--</script>-->
+<script>
+    $(document).ready(function (){
+        $("#regist").click(function () {
+            let formData = $("#registForm");
+            let form = new FormData(formData[0]);
+            validateAjax("/user/regist","/",form);
+        });
+    });
+</script>
 </body>
 </html>

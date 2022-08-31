@@ -25,6 +25,7 @@ public class JwtAuthenticationProvider extends OncePerRequestFilter {
     public static final String COOKIE_NAME = "jwt";
     @Autowired
     private CustomUserDetailService customUserDetailService;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
@@ -33,6 +34,7 @@ public class JwtAuthenticationProvider extends OncePerRequestFilter {
             if (!StringUtils.isEmptyOrWhitespace(jwt) && JwtTokenProvider.validateToken(jwt)) {
                 userSeq = JwtTokenProvider.getUserSeqFromJWT(jwt);
                 log.info(userSeq);
+                // todo 매번 DB에서 호출하는 방식은 비효율적이므로 시스템 메모리나 REDIS를 사용하는 방법으로 구현 필요.
                 UserDetailCustom user = customUserDetailService.loadUserByUserSeq(Long.parseLong(userSeq));
                 UserAuthentication userAuthentication = new UserAuthentication(user, null, user.getAuthorities());
                 userAuthentication.setDetails(user);
@@ -43,7 +45,7 @@ public class JwtAuthenticationProvider extends OncePerRequestFilter {
                 } else {
                     request.setAttribute("unauthorization", "401-001 인증키 만료.");
                 }
-                log.info("unauthorization error - id : {}, url : {}, Message : {}", userSeq, request.getRequestURI(), request.getAttribute("unauthorization"));
+//                log.info("unauthorization - userSeq : {}, url : {}, Message : {}", userSeq, request.getRequestURI(), request.getAttribute("unauthorization"));
             }
         } catch (Exception e) {
             log.error("errorMessage", e);
@@ -54,14 +56,13 @@ public class JwtAuthenticationProvider extends OncePerRequestFilter {
     private String getJwtFromRequest(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
-            Optional<Cookie> jwt = Arrays.stream(cookies).filter(cookie -> cookie.getName().equals(COOKIE_NAME)).findFirst();
-            return jwt.map(Cookie::getValue).orElse(null);
+            return Arrays.stream(cookies)
+                    .filter(cookie -> cookie.getName().equals(COOKIE_NAME))
+                    .findFirst()
+                    .map(Cookie::getValue)
+                    .orElse(null);
         } else {
             return null;
         }
-//        String bearerToken = request.getHeader("Authorization");
-//        if (!StringUtils.isEmptyOrWhitespace(bearerToken) && bearerToken.startsWith("Bearer ")){
-//            return bearerToken.substring("Bearer".length());
-//        }
     }
 }

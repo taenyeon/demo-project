@@ -1,7 +1,12 @@
 package com.example.demoproject.common.config;
 
 import com.example.demoproject.common.filter.LoggingFilter;
+import com.example.demoproject.common.serializer.DateTimeJacksonModule;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.support.ErrorPageFilter;
@@ -10,6 +15,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @RequiredArgsConstructor
@@ -19,7 +25,10 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     @Bean
     public ObjectMapper objectMapper() {
-        return new ObjectMapper();
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new DateTimeJacksonModule());
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,false);
+        return objectMapper;
     }
 
     @Bean
@@ -42,6 +51,17 @@ public class WebMvcConfig implements WebMvcConfigurer {
         FilterRegistrationBean registrationBean = new FilterRegistrationBean(errorPageFilter);
         registrationBean.setEnabled(false);
         return registrationBean;
+    }
+
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/js/**").addResourceLocations("classpath:/static/js/").setCachePeriod(60 * 60 * 24 * 365);
+        /* '/css/**'로 호출하는 자원은 '/static/css/' 폴더 아래에서 찾는다. */
+        registry.addResourceHandler("/css/**").addResourceLocations("classpath:/static/css/").setCachePeriod(60 * 60 * 24 * 365);
+        /* '/img/**'로 호출하는 자원은 '/static/img/' 폴더 아래에서 찾는다. */
+        registry.addResourceHandler("/img/**").addResourceLocations("classpath:/static/img/").setCachePeriod(60 * 60 * 24 * 365);
+        /* '/font/**'로 호출하는 자원은 '/static/font/' 폴더 아래에서 찾는다. */
+        registry.addResourceHandler("/font/**").addResourceLocations("classpath:/static/font/").setCachePeriod(60 * 60 * 24 * 365);
     }
 
     @Bean

@@ -6,16 +6,16 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.extern.slf4j.Slf4j;
 
+import java.time.Duration;
 import java.util.Date;
 
 @Slf4j
 public class JwtTokenProvider {
     private static final String JWT_SECRET = "secretKey";
 
-    private static final int JWT_EXPIRATION_MS = 604800000;
+    private static final long JWT_EXPIRATION_MS = Duration.ofMinutes(10).toMillis();
 
     public static String generateToken(UserDetailCustom userDetailCustom){
-        log.info(userDetailCustom.getId());
         Date now = new Date();
         Date expiredDate = new Date(now.getTime() + JWT_EXPIRATION_MS);
         return Jwts.builder()
