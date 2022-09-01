@@ -30,7 +30,7 @@ public class JwtAuthenticationProvider extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
             String jwt = getJwtFromRequest(request);
-            String userSeq = " - ";
+            String userSeq;
             if (!StringUtils.isEmptyOrWhitespace(jwt) && JwtTokenProvider.validateToken(jwt)) {
                 userSeq = JwtTokenProvider.getUserSeqFromJWT(jwt);
                 log.info(userSeq);
