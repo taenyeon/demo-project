@@ -38,7 +38,7 @@ public class UserService {
                 .orElseThrow(() -> new IllegalStateException("등록된 회원을 찾을 수 없습니다."));
     }
 
-    @Cacheable(value = "userEntity", key = "userSeq", cacheManager = "redisCacheManager")
+    @Cacheable(value = "userEntity", key = "#userSeq", cacheManager = "redisCacheManager")
     // Redis Cache 에 저장, 조회를 통해 DB를 사용하지 않고 더 빠르게 조회 가능하게 함.
     // Redis에 해당 데이터가 없을 경우, DB에서 조회 후, 케시로 저장.
     public UserDto findById(long userSeq) {
@@ -47,7 +47,7 @@ public class UserService {
                 .orElseThrow(() -> new IllegalStateException("등록된 회원을 찾을 수 없습니다."));
     }
 
-    @CacheEvict(value = "userEntity", key = "userSeq", cacheManager = "redisCacheManager")
+    @CacheEvict(value = "userEntity", key = "#userSeq", cacheManager = "redisCacheManager")
     public int deleteUser(long userSeq) {
         return userRepository.deleteUser(userSeq);
     }

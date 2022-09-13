@@ -3,6 +3,7 @@ package com.example.demoproject.common.security;
 import com.example.demoproject.common.security.entity.UserDetailCustom;
 import com.example.demoproject.domain.RefreshTokenDto;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.AllArgsConstructor;
@@ -62,11 +63,15 @@ public class JwtTokenProvider {
     }
 
     public static String getUserSeqFromJWT(String token) {
+        try{
         Claims claims = Jwts.parser()
                 .setSigningKey(JWT_SECRET)
                 .parseClaimsJws(token)
                 .getBody();
         return claims.getSubject();
+        } catch (ExpiredJwtException e){
+            return null;
+        }
     }
 
     public static boolean validateToken(String token) {

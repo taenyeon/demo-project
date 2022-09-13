@@ -26,7 +26,7 @@ public class RestControllerExceptionHandler {
     }
 
     @ExceptionHandler(IllegalStateException.class)
-    protected ResponseEntity<ErrorResponse> handelIllegalArgumentException(IllegalStateException e, HttpServletResponse response) throws IOException {
+    protected ResponseEntity<ErrorResponse> handelIllegalStateException(IllegalStateException e, HttpServletResponse response) throws IOException {
         log.info("HandelIllegalStateException", e);
         return getErrorResponse(e);
     }

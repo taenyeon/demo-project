@@ -9,26 +9,21 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Pattern;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Date;
 
-@Getter
-@Setter
-@ToString
+@Data
 @RedisHash("userSeq")
+@NoArgsConstructor
+@AllArgsConstructor
 public class UserDetailCustom implements UserDetails {
     @Id
     private long userSeq;
     private String id;
     private String role;
     private String name;
-    private LocalDate birthDay;
     private String phoneNum;
     private String email;
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
@@ -41,7 +36,7 @@ public class UserDetailCustom implements UserDetails {
         this.id = userDto.getId();
         this.role = userDto.getRole();
         this.name = userDto.getName();
-        this.birthDay = userDto.getBirthDay();
+//        this.birthDay = userDto.getBirthDay();
         this.phoneNum = userDto.getPhoneNum();
         this.email = userDto.getEmail();
         this.registDateTime = userDto.getRegistDateTime();

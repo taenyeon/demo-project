@@ -11,6 +11,10 @@ function validateAjax(url,returnUrl, formData) {
             if (data.resultCode === 200) {
                 location.replace(returnUrl);
             } else {
+                if (data.resultCode === 400){
+                    alert('status : '+data.resultCode+', message : '+data.resultMessage);
+                }
+                else if (data.resultCode === 401){
                 $.each(data, function (key, value) {
                     let msg = "<div name='error_" + key + "' style='color: red; font-size: small'>";
                     msg += value;
@@ -19,6 +23,7 @@ function validateAjax(url,returnUrl, formData) {
                     input.val("");
                     input.after(msg);
                 });
+                }
             }
         },
         error: function () {

@@ -43,10 +43,9 @@ public class JwtAuthenticationProvider extends OncePerRequestFilter {
             String jwt = getJwtFromRequest(request);
             String userSeq = null;
             if (!StringUtils.isEmptyOrWhitespace(jwt)) {
-                userSeq = JwtTokenProvider.getUserSeqFromJWT(jwt);
                 if (JwtTokenProvider.validateToken(jwt)) {
+                    userSeq = JwtTokenProvider.getUserSeqFromJWT(jwt);
                     // JWT 토큰 유효성 검사 (유효시간)
-                    log.info(userSeq);
                     // Redis를 사용하여 cache로 구현함.
                     setUserDetail(userSeq);
                 } else {
@@ -81,7 +80,8 @@ public class JwtAuthenticationProvider extends OncePerRequestFilter {
                 request.setAttribute("unauthorization", "401 인증키 없음.");
             }
         } catch (Exception e) {
-            log.error("errorMessage", e);
+                response.setHeader("Set-Cookie", null);
+                log.error("errorMessage", e);
         }
         filterChain.doFilter(request, response);
     }
