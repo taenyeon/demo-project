@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 
-import static com.example.demoproject.common.security.JwtAuthenticationProvider.COOKIE_NAME;
+import static com.example.demoproject.common.security.JwtAuthenticationProvider.JWT_COOKIE_NAME;
 
 @Controller
 @RequestMapping("/user")
@@ -30,6 +30,7 @@ public class UserController {
 
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @GetMapping("/login")
     public String getLoginPage() {
@@ -38,15 +39,15 @@ public class UserController {
 
     @PostMapping(value = "/login/process")
     @ResponseBody
-    public ResponseEntity<?> tryLogin(Token.Request token, HttpServletResponse response) {
+    public ResponseEntity<Token.Response> tryLogin(Token.Request token, HttpServletResponse response) {
         log.info("login process");
         UserDto user = userService.findByUserIdWhenLogin(token.getId());
         if (!passwordEncoder.matches(token.getPwd(), user.getPwd())) {
             log.info("비밀번호 오류 id : {}", token.getId());
             throw new IllegalStateException("비밀번호 오류입니다.");
         }
-        String generateToken = JwtTokenProvider.generateToken(new UserDetailCustom(user));
-        ResponseCookie responseCookie = ResponseCookie.from(COOKIE_NAME, generateToken)
+        String generateToken = jwtTokenProvider.generateToken(new UserDetailCustom(user));
+        ResponseCookie responseCookie = ResponseCookie.from(JWT_COOKIE_NAME, generateToken)
                 .path("/")
                 .secure(true)
                 .sameSite("None")
@@ -62,15 +63,14 @@ public class UserController {
     }
 
     @GetMapping("/logout")
-    public String tryLogout(HttpServletRequest request,HttpServletResponse response) {
+    public String tryLogout(HttpServletRequest request, HttpServletResponse response) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null){
-            new SecurityContextLogoutHandler().logout(request,response,authentication);
-        }
-        else {
+        if (authentication != null) {
+            new SecurityContextLogoutHandler().logout(request, response, authentication);
+        } else {
             throw new IllegalStateException("로그인 정보가 없습니다.");
         }
-        ResponseCookie responseCookie = ResponseCookie.from(COOKIE_NAME, null)
+        ResponseCookie responseCookie = ResponseCookie.from(JWT_COOKIE_NAME, null)
                 .path("/")
                 .maxAge(0)
                 .build();

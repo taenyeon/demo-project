@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.*;
 
-import static com.example.demoproject.common.security.JwtAuthenticationProvider.COOKIE_NAME;
+import static com.example.demoproject.common.security.JwtAuthenticationProvider.JWT_COOKIE_NAME;
 
 @Slf4j
 public class LoggingFilter implements Filter {
@@ -36,7 +36,7 @@ public class LoggingFilter implements Filter {
             if (httpRequest.getCookies()!= null){
 
             Cookie jwtCookie = Arrays.stream(httpRequest.getCookies())
-                    .filter(cookie -> StringUtils.equalsIgnoreCase(cookie.getName(), COOKIE_NAME))
+                    .filter(cookie -> StringUtils.equalsIgnoreCase(cookie.getName(), JWT_COOKIE_NAME))
                     .findFirst()
                     .orElse(null);
             userSeq = jwtCookie != null ? JwtTokenProvider.getUserSeqFromJWT(jwtCookie.getValue()) : " - ";

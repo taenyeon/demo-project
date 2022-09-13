@@ -5,6 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <script src="/js/validateAjax.js"></script>
 </head>
 <body>
 <form name="loginForm" id="loginForm">
@@ -24,27 +25,28 @@
         $("#login").click(function () {
             let formData = $("#loginForm");
             let form = new FormData(formData[0]);
-            $.ajax({
-                url: '/user/login/process',
-                method: 'POST',
-                data: form,
-                processData: false,
-                contentType: false,
-                dataType : 'json',
-                success: function (data){
-                    if (data.resultCode === 200){
-                    console.log("login success!")
-                    console.log(data);
-                    // location.href = "/v1/test"
-                    }else {
-                        alert("login fail!");
-                        alert('status : '+data.resultCode+', message : '+data.resultMessage);
-                    }
-                },
-                error: function (data){
-                        alert("알 수 없는 오류 발생")
-                }
-            })
+            validateAjax('/user/login/process','/v1/test',form);
+            // $.ajax({
+            //     url: '/user/login/process',
+            //     method: 'POST',
+            //     data: form,
+            //     processData: false,
+            //     contentType: false,
+            //     dataType : 'json',
+            //     success: function (data){
+            //         if (data.resultCode === 200){
+            //         console.log("login success!")
+            //         console.log(data);
+            //         // location.href = "/v1/test"
+            //         }else {
+            //             alert("login fail!");
+            //             alert('status : '+data.resultCode+', message : '+data.resultMessage);
+            //         }
+            //     },
+            //     error: function (data){
+            //             alert("알 수 없는 오류 발생")
+            //     }
+            // })
         })
     })
 </script>
