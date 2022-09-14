@@ -60,4 +60,9 @@ public class testController {
         return testEntities;
     }
 
+    @GetMapping("/chat")
+    public String getChatPage(){
+        return "chat";
+    }
+
 }

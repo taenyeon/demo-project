@@ -24,6 +24,11 @@ spring:
   output:
     ansi:
       enabled: always
+  devtools:
+    livereload:
+      enabled: true
+  freemarker:
+    cache: false
 server:
   port: 8000
   servlet:

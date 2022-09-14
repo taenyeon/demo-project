@@ -45,6 +45,9 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-validation', version: '2.5.2'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.4'
+    implementation 'org.springframework.boot:spring-boot-starter-websocket:2.7.3'
+    implementation 'org.apache.tomcat.embed:tomcat-embed-jasper:10.0.23'
+    implementation 'org.springframework.boot:spring-boot-devtools:2.7.3'
 }
 
 tasks.named('test') {
