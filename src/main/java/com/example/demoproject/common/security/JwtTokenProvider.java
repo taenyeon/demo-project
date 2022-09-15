@@ -21,7 +21,7 @@ import java.util.concurrent.TimeUnit;
 public class JwtTokenProvider {
 
     private static final String JWT_SECRET = "secretKey";
-    private final long ACCESS_TOKEN_EXPIRATION_MS = Duration.ofMinutes(10).toMillis();
+    private final long ACCESS_TOKEN_EXPIRATION_MS = Duration.ofMinutes(100).toMillis();
     private final long REFRESH_TOKEN_EXPIRATION_MS = Duration.ofDays(2).toMillis();
     public static final String REFRESH_TOKEN_KEY = "refreshToken:";
 

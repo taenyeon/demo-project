@@ -1,76 +1,88 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+<div>
+    <div>
+        <h1>[[${room.name}]]</h1>
+    </div>
+    <div>
+        <div id="msgArea"></div>
         <div>
             <div>
-                <h1>[[${room.name}]]</h1>
-            </div>
-            <div>
-                <div id="msgArea"></div>
-                <div >
-                    <div>
-                        <input type="text" id="msg">
-                        <div>
-                            <button type="button" id="button-send">전송</button>
-                        </div>
-                    </div>
+                <input type="text" id="msg">
+                <div>
+                    <button type="button" id="button-send">전송</button>
                 </div>
             </div>
         </div>
-        <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 
-        <script th:inline="javascript">
-            $(document).ready(function(){
+<script th:inline="javascript">
+    $(document).ready(function () {
 
-                var roomName = [[${room.name}]];
-                var roomId = [[${room.roomId}]];
-                var username = [[${#authentication.principal.username}]];
+        var roomName = [[${room.name}]];
+        var roomId = [[${room.roomId}]];
+        var username = [[${#authentication.principal.username}]];
+        var jwt = [[${jwt}]];
+        var header = {"jwt" : jwt};
+        console.log(roomName + ", " + roomId + ", " + username);
 
-                console.log(roomName + ", " + roomId + ", " + username);
+        var sockJs = new SockJS("/stomp/chat");
+        //1. SockJS를 내부에 들고있는 stomp를 내어줌
+        var stomp = Stomp.over(sockJs);
 
-                var sockJs = new SockJS("/stomp/chat");
-                //1. SockJS를 내부에 들고있는 stomp를 내어줌
-                var stomp = Stomp.over(sockJs);
+        //2. connection이 맺어지면 실행
+        stomp.connect(header, function () {
+            console.log("STOMP Connection")
 
-                //2. connection이 맺어지면 실행
-                stomp.connect({}, function (){
-                    console.log("STOMP Connection")
+            //4. subscribe(path, callback)으로 메세지를 받을 수 있음
+            stomp.subscribe("/sub/chat/room/" + roomId, function (chat) {
+                var content = JSON.parse(chat.body);
+                var writer = content.writer;
+                var message = content.message;
+                var str = '';
 
-                    //4. subscribe(path, callback)으로 메세지를 받을 수 있음
-                    stomp.subscribe("/sub/chat/room/" + roomId, function (chat) {
-                        var content = JSON.parse(chat.body);
-                        var writer = content.writer;
-                        var message = content.message;
-                        var str = '';
+                if (writer === username) {
+                    str = "<div>";
+                    str += "<div>";
+                    str += "<b>" + writer + " : " + message + "</b>";
+                    str += "</div></div>";
+                } else if (writer === 'SYSTEM'){
+                    str = "<div>";
+                    str += "<div>";
+                    str += "<b style='color: red; font-size: large'>\<" + writer + "\> " + message + "</b>";
+                    str += "</div></div>";
+                }
+                    else {
+                    }
+                    str = "<div>";
+                    str += "<div>";
+                    str += "<b>" + writer + " : " + message + "</b>";
+                    str += "</div></div>";
 
-                        if(writer === username){
-                            str = "<div>";
-                            str += "<div>";
-                            str += "<b>" + writer + " : " + message + "</b>";
-                            str += "</div></div>";
-                        }
-                        else{
-                            str = "<div>";
-                            str += "<div>";
-                            str += "<b>" + writer + " : " + message + "</b>";
-                            str += "</div></div>";
-                        }
-
-                        $("#msgArea").append(str);
-                    });
-
-                    //3. send(path, header, message)로 메세지를 보낼 수 있음
-                    stomp.send('/pub/chat/join', {}, JSON.stringify({roomId: roomId, writer: username}))
-                });
-
-                $("#button-send").on("click", function(e){
-                    var msg = document.getElementById("msg");
-
-                    console.log(username + ":" + msg.value);
-                    stomp.send('/pub/chat/message', {}, JSON.stringify({roomId: roomId, message: msg.value, writer: username}));
-                    msg.value = '';
-                });
+                $("#msgArea").append(str);
             });
-        </script>
+
+            //3. send(path, header, message)로 메세지를 보낼 수 있음
+            stomp.send('/pub/chat/join', header, JSON.stringify({
+                roomId: roomId,
+                writer: username}))
+        });
+
+        $("#button-send").on("click", function (e) {
+            var msg = document.getElementById("msg");
+
+            console.log(username + ":" + msg.value);
+            stomp.send('/pub/chat/message', header, JSON.stringify({
+                roomId: roomId,
+                message: msg.value,
+                writer: username
+            }));
+            msg.value = '';
+        });
+    });
+</script>
 </html>
