@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{/fragment/fragment_layout}">
+<th:block layout:fragment="content">
+<div>
+    <div>
+        <ul th:each="room : ${rooms}">
+            <li><a th:href="@{/chat/{roomId}(roomId = ${room.roomId})}">[[${room.name}]]</a></li>
+        </ul>
+    </div>
+</div>
+<form th:action="@{/chat}" method="post">
+    <input type="text" name="name">
+    <button>개설하기</button>
+</form>
+<script th:inline="javascript">
+    $(document).ready(function () {
+        $(".btn-create").on("click", function (e) {
+            e.preventDefault();
+
+            var name = $("input[name='name']").val();
+
+            if (name == "")
+                alert("Please write the name.")
+            else
+                $("form").submit();
+        });
+
+    });
+</script>
+</th:block>
+</html>

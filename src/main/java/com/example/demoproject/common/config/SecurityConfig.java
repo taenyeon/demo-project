@@ -43,11 +43,11 @@ public class SecurityConfig {
         http
                 .cors()
                 .and()
-                .csrf()
-                .disable()
+                .csrf().disable()
                 // session 사용 잠금
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .headers().frameOptions().sameOrigin()
                 .and()
                 // UsernamePasswordAuth 필터 앞(모든 security 필더 앞)에 커스텀 필터 적용
                 .addFilterBefore(jwtAuthenticationProvider, UsernamePasswordAuthenticationFilter.class)
@@ -89,11 +89,7 @@ public class SecurityConfig {
                 }))
                 .and()
                 // security 기본 제공 로그인 form 사용 X
-                .formLogin()
-                .disable()
-                .headers()
-                .frameOptions()
-                .disable();
+                .formLogin().disable();
         return http.build();
     }
 
