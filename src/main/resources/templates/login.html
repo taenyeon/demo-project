@@ -1,31 +1,25 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-    <script src="/js/validateAjax.js"></script>
-</head>
-<body>
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{/fragment/fragment_layout}">
+<th:block layout:fragment="content">
 <form name="loginForm" id="loginForm">
     <label for="loginId">ID : </label><input type="text" id="loginId" name="id" autofocus="autofocus"/> <br/>
     <label for="password">PWD : </label><input id="password" name="pwd" type="password"/> <br/>
     <input type="button" value="Login" name="login" id="login"/>
     <button type="button" value="Registry" name="registry" id="registry">Registry</button>
 </form>
-<h1>TEST</h1>
-<b>Authenticated Name</b>
 <script>
     $(document).ready(function () {
-        $("#registry").click(function (){
+        $("#registry").click(function () {
             location.href = "/user/regist";
         });
 
         $("#login").click(function () {
             let formData = $("#loginForm");
             let form = new FormData(formData[0]);
-            validateAjax('/user/login/process','/v1/test',form);
+            validateAjax('/user/login/process', '/v1/test', form);
             // $.ajax({
             //     url: '/user/login/process',
             //     method: 'POST',
@@ -50,5 +44,5 @@
         })
     })
 </script>
-</body>
+</th:block>
 </html>

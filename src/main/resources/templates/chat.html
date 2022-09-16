@@ -1,6 +1,9 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{/fragment/fragment_layout}">
+<th:block layout:fragment="content">
 <div>
     <div>
         <ul th:each="room : ${rooms}">
@@ -27,4 +30,5 @@
 
     });
 </script>
+</th:block>
 </html>

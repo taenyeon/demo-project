@@ -1,44 +1,40 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-    <script src="/js/validateAjax.js"></script>
-</head>
-<body>
-<form action="/user/regist" method="post" id="registForm">
-    <label for="id">ID</label><input type="text" id="id" name="id" autofocus="autofocus"/> <br/>
-    <label for="pwd">PWD</label><input type="password" id="pwd" name="pwd"/> <br/>
-    <label for="name">NAME</label><input type="text" id="name" name="name">
-    <br/>
-    <label for="gender">GENDER</label><select name="gender" id="gender">
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security" xmlns="http://www.w3.org/1999/html"
+      layout:decorate="~{/fragment/fragment_layout}">
+<th:block layout:fragment="content">
+    <form action="/user/regist" method="post" id="registForm">
+        <label for="id">ID</label><input type="text" id="id" name="id" autofocus="autofocus"/> <br/>
+        <label for="pwd">PWD</label><input type="password" id="pwd" name="pwd"/> <br/>
+        <label for="name">NAME</label><input type="text" id="name" name="name">
+        <br/>
+        <label for="gender">GENDER</label><select name="gender" id="gender">
         <option value="M">MEN</option>
         <option value="W">WOMEN</option>
     </select>
-    <br/>
-<!--    <label for="birthDay">BIRTHDAY</label><input type="date" id="birthDay" name="birthDay"><br/>-->
-    <label for="phoneNum">PHONE NUM</label><input type="text" id="phoneNum" name="phoneNum" ><br/>
-    <label for="email">EMAIL</label><input type="text" id="email" name="email"><br/>
-    <label for="role">ROLE
-        <select name="role" id="role">
-            <option value="ADMIN">ADMIN</option>
-            <option value="USER">USER</option>
-        </select>
-    </label>
-    <input type="button" id="regist" name="regist" value="regist"/>
-</form>
-<script>
-    $(document).ready(function () {
-        $("#regist").click(function () {
-            let check = $("input[name='gender']:checked").val();
-            let formData = $("#registForm");
-            let form = new FormData(formData[0]);
-            form.gender = check;
-            validateAjax("/user/regist", "/", form);
+        <br/>
+        <!--    <label for="birthDay">BIRTHDAY</label><input type="date" id="birthDay" name="birthDay"><br/>-->
+        <label for="phoneNum">PHONE NUM</label><input type="text" id="phoneNum" name="phoneNum"><br/>
+        <label for="email">EMAIL</label><input type="text" id="email" name="email"><br/>
+        <label for="role">ROLE
+            <select name="role" id="role">
+                <option value="ADMIN">ADMIN</option>
+                <option value="USER">USER</option>
+            </select>
+        </label>
+        <input type="button" id="regist" name="regist" value="regist"/>
+    </form>
+    <script>
+        $(document).ready(function () {
+            $("#regist").click(function () {
+                let check = $("input[name='gender']:checked").val();
+                let formData = $("#registForm");
+                let form = new FormData(formData[0]);
+                form.gender = check;
+                validateAjax("/user/regist", "/", form);
+            });
         });
-    });
-</script>
-</body>
+    </script>
+</th:block>
 </html>
