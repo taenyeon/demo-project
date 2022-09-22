@@ -6,6 +6,7 @@
 <b>Authenticated Name</b>
 <div sec:authorize="isAuthenticated()"><b>Hello Dood!</b> your Id is <span style="color: cornflowerblue" sec:authentication="name"></span></div>
 <button sec:authorize="isAuthenticated()" name="logout" id="logout">logout</button>
+    <a th:href="@{/chat}">Chat Room</a>
 <script>
     $(document).ready(function () {
         $("#logout").click(function () {

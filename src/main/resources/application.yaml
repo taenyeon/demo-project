@@ -27,8 +27,10 @@ spring:
   devtools:
     livereload:
       enabled: true
-  freemarker:
-    cache: false
+  rabbitmq:
+    host: localhost
+    username: guest
+    password: guest
 server:
   port: 8000
   servlet:

@@ -29,13 +29,13 @@ public class ChatController {
 
     @GetMapping("/{roomId}")
     public String getRoom(Model model, @PathVariable String roomId, @CookieValue("jwt") String jwt){
-        model.addAttribute("room",chatService.findById(roomId));
+        model.addAttribute("room",chatService.joinById(roomId));
         model.addAttribute("jwt",jwt);
         return "/chatRoom";
     }
     @PostMapping("")
     public String createRoom(String name, @AuthenticationPrincipal UserDetailCustom userDetailCustom){
-        ChatRoomDto chatRoomDto = ChatRoomDto.create(name, userDetailCustom.getUserSeq());
+        ChatRoomDto chatRoomDto = ChatRoomDto.create(name, userDetailCustom);
         log.info("Create ChatRoom - userSeq : {}, chatRoomDto : {}",userDetailCustom.getUserSeq(), chatRoomDto);
         int result = chatService.insertRoom(chatRoomDto);
         return "redirect:/chat";

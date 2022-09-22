@@ -2,6 +2,7 @@ package com.example.demoproject.controller;
 
 import com.example.demoproject.common.security.JwtTokenProvider;
 import com.example.demoproject.common.security.entity.UserDetailCustom;
+import com.example.demoproject.domain.ResponseDto;
 import com.example.demoproject.domain.Token;
 import com.example.demoproject.domain.UserDto;
 import com.example.demoproject.service.UserService;
@@ -84,10 +85,15 @@ public class UserController {
     }
 
     @PostMapping("/regist")
-    public String insertUser(@Validated UserDto userDto) {
+    @ResponseBody
+    public ResponseEntity<ResponseDto> insertUser(@Validated UserDto userDto) {
         log.info("registUser");
         userService.insertUser(userDto);
-        return "test";
+        ResponseDto responseDto = ResponseDto.builder()
+                .resultCode(200)
+                .resultMessage("success")
+                .build();
+        return ResponseEntity.ok().body(responseDto);
     }
 
     @ResponseBody

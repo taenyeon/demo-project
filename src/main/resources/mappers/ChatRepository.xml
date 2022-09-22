@@ -4,20 +4,27 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.demoproject.repository.ChatRepository">
     <insert id="insert" parameterType="com.example.demoproject.common.webSocket.domain.ChatRoomDto">
-        insert into demo_project.tb_chat_room
+        insert into demo_project.tb_chat_room (roomId, name, createBySeq, createByUserId, registDateTime)
         values (#{roomId},
                 #{name},
-                #{createBy},
+                #{createBySeq},
+                #{createByUserId},
                 #{registDateTime})
     </insert>
-
+    <select id="joinById" resultType="com.example.demoproject.common.webSocket.domain.ChatRoomDto">
+        select *
+        from tb_chat_room r
+                 left join tb_chat_member m on r.roomId = m.roomId
+                 left join tb_chat_message tcm on r.roomId = tcm.roomId
+        where r.roomId = #{roomId}
+    </select>
     <select id="findAll" resultType="com.example.demoproject.common.webSocket.domain.ChatRoomDto">
-        select roomId, name, createBy, registDateTime
+        select roomId, name, createBySeq, createByUserId, registDateTime
         from demo_project.tb_chat_room
         order by registDateTime desc
     </select>
     <select id="findById" resultType="com.example.demoproject.common.webSocket.domain.ChatRoomDto">
-        select *
+        select roomId, name, createBySeq, createByUserId, registDateTime
         from demo_project.tb_chat_room
         where roomId = #{roomId}
     </select>

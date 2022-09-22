@@ -49,6 +49,10 @@ dependencies {
     implementation 'org.apache.tomcat.embed:tomcat-embed-jasper:10.0.23'
     implementation 'org.springframework.boot:spring-boot-devtools:2.7.3'
     implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect:3.1.0'
+//    implementation 'io.projectreactor.netty:reactor-netty:1.0.22'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.4'
+    implementation 'org.springframework.amqp:spring-amqp:2.4.6'
+    implementation 'org.springframework.amqp:spring-rabbit-test:2.4.6'
 }
 
 tasks.named('test') {

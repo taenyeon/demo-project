@@ -13,4 +13,5 @@ public interface ChatRepository {
     List<ChatRoomDto> findAll();
     Optional<ChatRoomDto> findById(String roomId);
     int insert(ChatRoomDto chatRoomDto);
+    Optional<ChatRoomDto> joinById(String roomId);
 }

@@ -19,20 +19,19 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class StompHandler implements ChannelInterceptor {
 
-    private final CustomUserDetailService customUserDetailService;
+//    private final CustomUserDetailService customUserDetailService;
 
     @Override
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
-        if (StompCommand.CONNECT == accessor.getCommand()) {
+        if (StompCommand.CONNECT == accessor.getCommand() || StompCommand.SEND == accessor.getCommand()) {
             String jwt = accessor.getFirstNativeHeader("jwt");
             JwtTokenProvider.validateToken(jwt);
-            String userSeq = JwtTokenProvider.getUserSeqFromJWT(jwt);
-            UserDetailCustom user = customUserDetailService.loadUserByUserSeq(Long.parseLong(userSeq));
-            UserAuthentication userAuthentication = new UserAuthentication(user, null, user.getAuthorities());
-            userAuthentication.setDetails(user);
-            SecurityContextHolder.getContext().setAuthentication(userAuthentication);
-
+//            String userSeq = JwtTokenProvider.getUserSeqFromJWT(jwt);
+//            UserDetailCustom user = customUserDetailService.loadUserByUserSeq(Long.parseLong(userSeq));
+//            UserAuthentication userAuthentication = new UserAuthentication(user, null, user.getAuthorities());
+//            userAuthentication.setDetails(user);
+//            SecurityContextHolder.getContext().setAuthentication(userAuthentication);
         }
         return message;
     }

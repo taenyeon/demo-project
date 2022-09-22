@@ -18,13 +18,18 @@ public class ChatService {
         return chatRepository.findAll();
     }
 
-    public ChatRoomDto findById(String roomId){
+    public ChatRoomDto findById(String roomId) {
         return chatRepository.findById(roomId)
                 .orElseThrow(() -> new IllegalStateException("roomId에 해당하는 채팅방을 찾을 수 없습니다."));
     }
 
-    public int insertRoom(ChatRoomDto chatRoomDto){
-        log.info("roomDto : {}",chatRoomDto);
+    public int insertRoom(ChatRoomDto chatRoomDto) {
+        log.info("roomDto : {}", chatRoomDto);
         return chatRepository.insert(chatRoomDto);
+    }
+
+    public ChatRoomDto joinById(String roomId) {
+        return chatRepository.findById(roomId)
+                .orElseThrow(() -> new IllegalStateException("roomId에 해당하는 채팅방을 찾을 수 없습니다."));
     }
 }

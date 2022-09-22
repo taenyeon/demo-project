@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demoproject.repository.ChatMessageRepository">
+    <insert id="insertMessage">
+        insert into tb_chat_message (roomId, writerSeq, writer, message)
+        VALUES (roomId = #{roomId},
+                writerSeq = #{writerSeq},
+                writer = #{writer},
+                message = #{message})
+    </insert>
+    <delete id="deleteMessage">
+        delete
+        from tb_chat_message
+        where messageSeq = #{messageSeq}
+    </delete>
+    <select id="findByRoomId" resultType="com.example.demoproject.common.webSocket.domain.ChatMessageDto">
+        select *
+        from tb_chat_message
+        where roomId = #{roomId}
+    </select>
+</mapper>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demoproject.repository.ChatMemberRepository">
+    <insert id="insertMember">
+        insert into demo_project.tb_chat_member (userSeq, userId, roomId)
+        VALUES (#{userSeq}, #{userId}, #{roomId})
+    </insert>
+    <delete id="deleteMember">
+        delete
+        from demo_project.tb_chat_member
+        where userSeq = #{userSeq}
+    </delete>
+    <select id="findBySeq" resultType="com.example.demoproject.common.webSocket.domain.ChatMemberDto">
+        select userSeq, userId, roomId
+        from demo_project.tb_chat_member
+        where userSeq = #{userSeq}
+    </select>
+    <select id="findAllByRoomId" resultType="com.example.demoproject.common.webSocket.domain.ChatMemberDto">
+        select userSeq, userId, roomId
+        from demo_project.tb_chat_member
+        where roomId = #{roomId}
+    </select>
+</mapper>
