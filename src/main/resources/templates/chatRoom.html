@@ -13,9 +13,8 @@
             <div>
                 <div>
                     <input type="text" id="msg">
-                    <div>
                         <button type="button" id="button-send">전송</button>
-                    </div>
+                        <button type="button" id="button-disconnect">나가기</button>
                 </div>
             </div>
         </div>
@@ -27,9 +26,40 @@
             var roomName = [[${room.name}]];
             var roomId = [[${room.roomId}]];
             var username = [[${#authentication.principal.username}]];
-            var jwt = [[${jwt}]];
-            var header = {"jwt": jwt};
+            var header = {"jwt": [[${jwt}]]};
             console.log(roomName + ", " + roomId + ", " + username);
+
+            $.ajax({
+                cache: false,
+                url: '/chat/join/'+roomId,
+                processData: false,
+                contentType: false,
+                type: 'GET',
+                success: function (data) {
+                    if (data !== null) {
+                    data.forEach(function (message) {
+                        console.log(message)
+                    if (message.writer === username) {
+                        str = "<div>";
+                        str += "<div>";
+                        str += "<b>" + message.writer + " : " + message.message + "</b>";
+                        str += "</div></div>";
+                    } else if (message.writer === 'SYSTEM') {
+                        str = "<div>";
+                        str += "<div>";
+                        str += "<b style='color: red; font-size: large; text-align: center'>\<" + message.writer + "\> " + message.message + "</b>";
+                        str += "</div></div>";
+                    } else {
+                        str = "<div style='text-align: right'>";
+                        str += "<div>";
+                        str += "<b>" + message.writer + " : " + message.message + "</b>";
+                        str += "</div></div>";
+                    }
+                    $("#msgArea").append(str);
+                    });
+                    }
+                }
+            });
 
             var sockJs = new SockJS("/stomp/chat");
             //1. SockJS를 내부에 들고있는 stomp를 내어줌
@@ -62,7 +92,6 @@
                     str += "<b>" + writer + " : " + message + "</b>";
                     str += "</div></div>";
                     }
-
                     $("#msgArea").append(str);
                 });
 
@@ -73,7 +102,7 @@
                 }))
             });
 
-            $("#button-send").on("click", function (e) {
+            $("#button-send").on("click", function () {
                 var msg = document.getElementById("msg");
 
                 console.log(username + ":" + msg.value);
@@ -83,6 +112,14 @@
                     writer: username
                 }));
                 msg.value = '';
+            });
+           $("#button-disconnect").on("click",function (){
+               console.log(username + " disconnect");
+               stomp.send('/pub/chat/out', header, JSON.stringify({
+                   roomId: roomId,
+                   writer: username}));
+               stomp.disconnect();
+               location.replace('/chat');
             });
         });
     </script>

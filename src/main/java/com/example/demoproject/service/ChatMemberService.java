@@ -22,8 +22,18 @@ public class ChatMemberService {
         chatMemberRepository.deleteMember(userSeq);
     }
 
-    public List<ChatMemberDto> findByRoomId(String roomId){
+    public List<ChatMemberDto> findByRoomId(String roomId) {
         return chatMemberRepository.findAllByRoomId(roomId);
+    }
+
+    public ChatMemberDto findBySeq(Long userSeq) {
+        return chatMemberRepository.findBySeq(userSeq)
+                .orElseGet(null);
+    }
+
+    public boolean isRoomMember(ChatMemberDto chatMemberDto) {
+        return chatMemberRepository.findBySeqAndRoomId(chatMemberDto)
+                .isPresent();
     }
 
 }

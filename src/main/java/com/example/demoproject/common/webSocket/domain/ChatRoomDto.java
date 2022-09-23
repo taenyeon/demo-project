@@ -24,6 +24,7 @@ public class ChatRoomDto {
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private LocalDateTime registDateTime;
     private List<ChatMemberDto> chatMemberDtos;
+    private List<ChatMessageDto> chatMessageDtos;
     private Set<WebSocketSession> sessions = new HashSet<>();
 
     public static ChatRoomDto create(String name, UserDetailCustom userDetailCustom){

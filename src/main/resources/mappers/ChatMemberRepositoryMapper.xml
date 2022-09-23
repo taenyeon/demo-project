@@ -22,4 +22,10 @@
         from demo_project.tb_chat_member
         where roomId = #{roomId}
     </select>
+    <select id="findBySeqAndRoomId" resultType="com.example.demoproject.common.webSocket.domain.ChatMemberDto">
+        select *
+        from demo_project.tb_chat_member
+        where roomId = #{roomId}
+          and userSeq = #{userSeq}
+    </select>
 </mapper>

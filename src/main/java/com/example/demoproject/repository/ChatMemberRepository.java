@@ -12,5 +12,7 @@ public interface ChatMemberRepository {
     int insertMember(ChatMemberDto chatMemberDto);
     int deleteMember(long userSeq);
     Optional<ChatMemberDto> findBySeq(long userSeq);
+    Optional<ChatMemberDto> findBySeqAndRoomId(ChatMemberDto chatMemberDto);
     List<ChatMemberDto> findAllByRoomId(String roomId);
+
 }

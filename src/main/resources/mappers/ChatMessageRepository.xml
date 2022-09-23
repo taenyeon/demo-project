@@ -5,10 +5,10 @@
 <mapper namespace="com.example.demoproject.repository.ChatMessageRepository">
     <insert id="insertMessage">
         insert into tb_chat_message (roomId, writerSeq, writer, message)
-        VALUES (roomId = #{roomId},
-                writerSeq = #{writerSeq},
-                writer = #{writer},
-                message = #{message})
+        VALUES (#{roomId},
+                #{writerSeq},
+                #{writer},
+                #{message})
     </insert>
     <delete id="deleteMessage">
         delete
@@ -19,5 +19,6 @@
         select *
         from tb_chat_message
         where roomId = #{roomId}
+        order by messageSeq
     </select>
 </mapper>
