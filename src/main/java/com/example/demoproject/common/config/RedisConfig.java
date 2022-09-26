@@ -61,7 +61,6 @@ public class RedisConfig {
         PolymorphicTypeValidator ptv = BasicPolymorphicTypeValidator.builder()
                 .allowIfSubType(Object.class)
                 .build();
-
         return JsonMapper.builder()
                 .polymorphicTypeValidator(ptv)
                 .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)

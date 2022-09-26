@@ -56,7 +56,7 @@ public class LoggingFilter implements Filter {
                     getRequestBody(requestWrapper),
                     startTime
             );
-            chain.doFilter(requestWrapper, responseWrapper);
+            chain.doFilter(requestWrapper, responseWrapper); // controller
             // 필터 체인 후, response logging
             log.info("[RESPONSE] userSeq = {}, headers = {}, status = {}, body = {}, elapsedTime = {}",
                     userSeq,

@@ -4,17 +4,19 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       layout:decorate="~{/fragment/fragment_layout}">
 <th:block layout:fragment="content">
+    <link th:href="@{/css/chatRoom.css}" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/77ad8525ff.js" crossorigin="anonymous"></script>
     <div>
         <div>
             <h1>[[${room.name}]]</h1>
         </div>
-        <div>
-            <div id="msgArea" style="overflow: scroll; width: 800px; height: 400px"></div>
+        <div style="  height: 530px;width: 300px;">
+            <div id="chatWrap" class="chatWrap"></div>
             <div>
-                <div>
-                    <input type="text" id="msg">
-                        <button type="button" id="button-send">전송</button>
-                        <button type="button" id="button-disconnect">나가기</button>
+                <div style="height: 30px; width: 300px">
+                    <input style="height: 30px; width: 180px; margin: 5px" type="text" id="msg">
+                    <button style="height: 30px; width: 45px; margin: 2px" type="button" id="button-send">전송</button>
+                    <button style="height: 30px; width: 45px; margin: 2px" type="button" id="button-disconnect">나가기</button>
                 </div>
             </div>
         </div>
@@ -31,32 +33,31 @@
 
             $.ajax({
                 cache: false,
-                url: '/chat/join/'+roomId,
+                url: '/chat/join/' + roomId,
                 processData: false,
                 contentType: false,
                 type: 'GET',
                 success: function (data) {
                     if (data !== null) {
-                    data.forEach(function (message) {
-                        console.log(message)
-                    if (message.writer === username) {
-                        str = "<div>";
-                        str += "<div>";
-                        str += "<b>" + message.writer + " : " + message.message + "</b>";
-                        str += "</div></div>";
-                    } else if (message.writer === 'SYSTEM') {
-                        str = "<div>";
-                        str += "<div>";
-                        str += "<b style='color: red; font-size: large; text-align: center'>\<" + message.writer + "\> " + message.message + "</b>";
-                        str += "</div></div>";
-                    } else {
-                        str = "<div style='text-align: right'>";
-                        str += "<div>";
-                        str += "<b>" + message.writer + " : " + message.message + "</b>";
-                        str += "</div></div>";
-                    }
-                    $("#msgArea").append(str);
-                    });
+                        data.forEach(function (message) {
+                            console.log(message)
+                            if (message.writer === username) {
+                                str = "<div class='chat me'>";
+                                str += "<div class='textbox'>" + message.message + "</div>";
+                                str += "</div>";
+                            } else if (message.writer === 'SYSTEM') {
+                                str = "<div class='chat'>";
+                                str += "<div class='textbox' style='text-align: center'>";
+                                str += "<b style='color: red; font-size: large;'>\<" + message.writer + "\> " + message.message + "</b>";
+                                str += "</div></div>";
+                            } else {
+                                str = "<div class='chat other'>";
+                                str += "<div class='icon'>";
+                                str += "<i class='fa-solid fa-user'></i></div>";
+                                str += "<div class='textbox'>" + message.writer + " : " + message.message + "</div>";
+                            }
+                            $("#chatWrap").append(str);
+                        });
                     }
                 }
             });
@@ -76,23 +77,23 @@
                     var message = content.message;
                     var str = '';
 
-                    if (writer === username) {
-                        str = "<div>";
-                        str += "<div>";
-                        str += "<b>" + writer + " : " + message + "</b>";
-                        str += "</div></div>";
-                    } else if (writer === 'SYSTEM') {
-                        str = "<div>";
-                        str += "<div>";
-                        str += "<b style='color: red; font-size: large; text-align: center'>\<" + writer + "\> " + message + "</b>";
+                    if (message.writer === username) {
+                        str = "<div class='chat me'>";
+                        str += "<div class='textbox'>" + message + "</div>";
+                        str += "</div>";
+                    } else if (message.writer === 'SYSTEM') {
+                        str = "<div class='chat'>";
+                        str += "<div class='textbox' style='text-align: center'>";
+                        str += "<b style='color: red; font-size: large;'>\<" + writer + "\> " + message + "</b>";
                         str += "</div></div>";
                     } else {
-                    str = "<div style='text-align: right'>";
-                    str += "<div>";
-                    str += "<b>" + writer + " : " + message + "</b>";
-                    str += "</div></div>";
+                        str = "<div class='chat other'>";
+                        str += "<div class='icon'>";
+                        str += "<i class='fa-solid fa-user'></i></div>";
+                        str += "<div class='textbox'>" + writer + " : " + message + "</div>";
+                        str += "</div>";
                     }
-                    $("#msgArea").append(str);
+                    $("#chatWrap").append(str);
                 });
 
                 //3. send(path, header, message)로 메세지를 보낼 수 있음
@@ -103,6 +104,26 @@
             });
 
             $("#button-send").on("click", function () {
+                sendMsg();
+            });
+
+            $("#msg").keydown(function (key) {
+                if (key.keyCode === 13) {
+                    sendMsg();
+                }
+            });
+
+            $("#button-disconnect").on("click", function () {
+                console.log(username + " disconnect");
+                stomp.send('/pub/chat/out', header, JSON.stringify({
+                    roomId: roomId,
+                    writer: username
+                }));
+                stomp.disconnect();
+                location.replace('/chat');
+            });
+
+            function sendMsg() {
                 var msg = document.getElementById("msg");
 
                 console.log(username + ":" + msg.value);
@@ -112,15 +133,7 @@
                     writer: username
                 }));
                 msg.value = '';
-            });
-           $("#button-disconnect").on("click",function (){
-               console.log(username + " disconnect");
-               stomp.send('/pub/chat/out', header, JSON.stringify({
-                   roomId: roomId,
-                   writer: username}));
-               stomp.disconnect();
-               location.replace('/chat');
-            });
+            }
         });
     </script>
 </th:block>
