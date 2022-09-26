@@ -16,7 +16,8 @@
                 <div style="height: 30px; width: 300px">
                     <input style="height: 30px; width: 180px; margin: 5px" type="text" id="msg">
                     <button style="height: 30px; width: 45px; margin: 2px" type="button" id="button-send">전송</button>
-                    <button style="height: 30px; width: 45px; margin: 2px" type="button" id="button-disconnect">나가기</button>
+                    <button style="height: 30px; width: 45px; margin: 2px" type="button" id="button-disconnect">나가기
+                    </button>
                 </div>
             </div>
         </div>
@@ -77,11 +78,11 @@
                     var message = content.message;
                     var str = '';
 
-                    if (message.writer === username) {
+                    if (writer === username) {
                         str = "<div class='chat me'>";
                         str += "<div class='textbox'>" + message + "</div>";
                         str += "</div>";
-                    } else if (message.writer === 'SYSTEM') {
+                    } else if (writer === 'SYSTEM') {
                         str = "<div class='chat'>";
                         str += "<div class='textbox' style='text-align: center'>";
                         str += "<b style='color: red; font-size: large;'>\<" + writer + "\> " + message + "</b>";

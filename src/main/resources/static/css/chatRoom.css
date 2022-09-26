@@ -9,7 +9,6 @@ a {
 }
 
 .chatWrap {
-    padding: 40px 0;
     height: 500px;
     width: 300px;
     overflow: scroll;
@@ -25,15 +24,15 @@ a {
 .chatWrap .chat .icon {
     position: relative;
     overflow: hidden;
-    width: 50px;
-    height: 50px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     background-color: #eee;
 }
 
 .chatWrap .chat .icon i {
     position: absolute;
-    top: 10px;
+    top: 3px;
     left: 50%;
     font-size: 2.5rem;
     color: #aaa;
